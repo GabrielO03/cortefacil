@@ -1,0 +1,17 @@
+Esse projeto está sendo desenvolvido por:
+
+- Matheus Henrique  
+- Waynne Gabriely  
+- Gabriel de Oliveira  
+
+Somos alunos de Engenharia de Software na UniRV e criamos o CorteFácil durante a disciplina de **Processo de Software**.
+
+A ideia surgiu com o objetivo de facilitar o agendamento de cortes em barbearias, trazendo praticidade tanto pro cliente quanto pro barbeiro. Durante o desenvolvimento, aplicamos conceitos reais como versionamento com Git, autenticação, banco de dados, estrutura separada de frontend/backend e testes via Postman.
+
+Cada um contribuiu de forma única, e mesmo com os erros, bugs e “não sei por que tá dando isso” 😅, fomos avançando passo a passo até construir uma base sólida que pode virar um sistema real futuramente.
+
+Projeto feito com esforço, memes, brigas por parte da Waynne, cafeína por vicio mesmo e tabs abertas no navegador.💻
+
+– Matheus, Waynne e Gabriel
+------------------------------------------------------
+
