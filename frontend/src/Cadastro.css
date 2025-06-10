@@ -1,0 +1,203 @@
+/* Estilos específicos para o componente Cadastro */
+.cadastro-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--cor-cinza-claro) 0%, #e5e5e5 100%);
+}
+
+.cadastro-card {
+  background: var(--cor-terciaria);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cadastro-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--cor-secundaria) 0%, var(--cor-primaria) 100%);
+}
+
+.cadastro-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.cadastro-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.cadastro-subtitle {
+  color: var(--cor-cinza-escuro);
+  font-size: 16px;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.cadastro-form {
+  margin-bottom: 24px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--cor-primaria);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cadastro-button {
+  width: 100%;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cadastro-button.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.cadastro-button.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.cadastro-footer {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.cadastro-footer p {
+  margin: 0;
+  color: var(--cor-cinza-escuro);
+  font-size: 14px;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--cor-secundaria);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transicao);
+  padding: 0;
+  margin-left: 4px;
+}
+
+.link-button:hover {
+  color: #b91c1c;
+  text-decoration: underline;
+}
+
+.link-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Validação visual dos campos */
+.input:invalid {
+  border-color: #ef4444;
+}
+
+.input:valid {
+  border-color: #10b981;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .cadastro-container {
+    padding: 16px;
+  }
+  
+  .cadastro-card {
+    padding: 24px;
+  }
+  
+  .cadastro-title {
+    font-size: 28px;
+  }
+  
+  .cadastro-subtitle {
+    font-size: 14px;
+  }
+}
+
+/* Animações de entrada */
+.cadastro-card {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estados de foco melhorados */
+.input:focus {
+  transform: translateY(-1px);
+}
+
+/* Efeito hover nos inputs */
+.input:hover:not(:focus) {
+  border-color: #d1d5db;
+}
+
+/* Estilo para inputs desabilitados */
+.input:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Melhorias de acessibilidade */
+.cadastro-button:focus,
+.input:focus,
+.link-button:focus {
+  outline: 2px solid var(--cor-secundaria);
+  outline-offset: 2px;
+}

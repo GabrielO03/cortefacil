@@ -7,8 +7,12 @@ function Dashboard({ usuario: usuarioProp, onLogout }) {
   const [novoAgendamento, setNovoAgendamento] = useState({
     data: '',
     horario: '',
-    servico: 'Corte de cabelo'
+    servico: 'Corte de cabelo',
+    observacoes: ''
   });
+  const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
+  const [carregandoHorarios, setCarregandoHorarios] = useState(false);
+  const [carregandoAgendamento, setCarregandoAgendamento] = useState(false);
   const [mensagem, setMensagem] = useState('');
   const [tipoMensagem, setTipoMensagem] = useState('');
 
@@ -53,47 +57,139 @@ function Dashboard({ usuario: usuarioProp, onLogout }) {
       ...prev,
       [name]: value
     }));
+    
+    // Se mudou a data, buscar horários disponíveis
+    if (name === 'data' && value) {
+      buscarHorariosDisponiveis(value);
+    }
   };
 
-  const criarAgendamento = () => {
-    if (!novoAgendamento.data || !novoAgendamento.horario) {
-      setMensagem('Por favor, preencha todos os campos.');
+  const buscarHorariosDisponiveis = async (data) => {
+    try {
+      setCarregandoHorarios(true);
+      const response = await fetch(`http://localhost:5000/api/usuarios/horarios-disponiveis?data=${data}`);
+      const resultado = await response.json();
+      
+      if (response.ok) {
+        setHorariosDisponiveis(resultado.horariosDisponiveis);
+      } else {
+        setMensagem(resultado.erro || 'Erro ao buscar horários disponíveis');
+        setTipoMensagem('erro');
+      }
+    } catch (erro) {
+      setMensagem('Erro ao conectar com o servidor');
+      setTipoMensagem('erro');
+    } finally {
+      setCarregandoHorarios(false);
+    }
+  };
+
+  const carregarAgendamentos = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/usuarios/agendamentos/${usuarioProp.id}`);
+      const resultado = await response.json();
+      
+      if (response.ok) {
+        setAgendamentos(resultado.agendamentos);
+      } else {
+        setMensagem(resultado.erro || 'Erro ao carregar agendamentos');
+        setTipoMensagem('erro');
+      }
+    } catch (erro) {
+      setMensagem('Erro ao conectar com o servidor');
+      setTipoMensagem('erro');
+    }
+  };
+
+  const criarAgendamento = async () => {
+    if (!novoAgendamento.data || !novoAgendamento.horario || !novoAgendamento.servico) {
+      setMensagem('Por favor, preencha todos os campos obrigatórios.');
       setTipoMensagem('erro');
       return;
     }
 
-    const novoId = agendamentos.length + 1;
-    const agendamento = {
-      id: novoId,
-      ...novoAgendamento,
-      barbeiro: 'Carlos Santos',
-      status: 'agendado'
-    };
+    try {
+      setCarregandoAgendamento(true);
+      const response = await fetch('http://localhost:5000/api/usuarios/agendamentos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clienteId: usuarioProp.id,
+          data: novoAgendamento.data,
+          horario: novoAgendamento.horario,
+          servico: novoAgendamento.servico,
+          observacoes: novoAgendamento.observacoes
+        })
+      });
 
-    setAgendamentos(prev => [...prev, agendamento]);
-    setNovoAgendamento({ data: '', horario: '', servico: 'Corte de cabelo' });
-    setMensagem('Agendamento criado com sucesso!');
-    setTipoMensagem('sucesso');
+      const resultado = await response.json();
+
+      if (response.ok) {
+        setMensagem(resultado.mensagem);
+        setTipoMensagem('sucesso');
+        setNovoAgendamento({
+          data: '',
+          horario: '',
+          servico: 'Corte de cabelo',
+          observacoes: ''
+        });
+        setHorariosDisponiveis([]);
+        // Recarregar agendamentos
+        carregarAgendamentos();
+      } else {
+        setMensagem(resultado.erro || 'Erro ao criar agendamento');
+        setTipoMensagem('erro');
+      }
+    } catch (erro) {
+      setMensagem('Erro ao conectar com o servidor');
+      setTipoMensagem('erro');
+    } finally {
+      setCarregandoAgendamento(false);
+    }
   };
 
-  const cancelarAgendamento = (id) => {
-    setAgendamentos(prev => prev.filter(ag => ag.id !== id));
-    setMensagem('Agendamento cancelado.');
-    setTipoMensagem('sucesso');
+  const cancelarAgendamento = async (agendamentoId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/usuarios/agendamentos/${agendamentoId}/cancelar`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clienteId: usuarioProp.id
+        })
+      });
+
+      const resultado = await response.json();
+
+      if (response.ok) {
+        setMensagem(resultado.mensagem);
+        setTipoMensagem('sucesso');
+        // Recarregar agendamentos
+        carregarAgendamentos();
+      } else {
+        setMensagem(resultado.erro || 'Erro ao cancelar agendamento');
+        setTipoMensagem('erro');
+      }
+    } catch (erro) {
+      setMensagem('Erro ao conectar com o servidor');
+      setTipoMensagem('erro');
+    }
   };
 
   const logout = () => {
-    // Remover token do localStorage
     localStorage.removeItem('token');
-    
-    // Chamar função de logout do componente pai
-    if (onLogout) {
-      onLogout();
-    } else {
-      setUsuario(null);
-      window.location.reload();
-    }
+    onLogout();
   };
+
+  // Carregar agendamentos ao montar o componente
+  React.useEffect(() => {
+    if (usuarioProp && usuarioProp.id) {
+      carregarAgendamentos();
+    }
+  }, [usuarioProp]);
 
   if (!usuario) {
     return <div>Carregando...</div>;
@@ -140,15 +236,14 @@ function Dashboard({ usuario: usuarioProp, onLogout }) {
                   value={novoAgendamento.horario}
                   onChange={handleInputChange}
                   className="input"
+                  disabled={!novoAgendamento.data || carregandoHorarios}
                 >
-                  <option value="">Selecione um horário</option>
-                  <option value="09:00">09:00</option>
-                  <option value="10:00">10:00</option>
-                  <option value="11:00">11:00</option>
-                  <option value="14:00">14:00</option>
-                  <option value="15:00">15:00</option>
-                  <option value="16:00">16:00</option>
-                  <option value="17:00">17:00</option>
+                  <option value="">
+                    {carregandoHorarios ? 'Carregando horários...' : 'Selecione um horário'}
+                  </option>
+                  {horariosDisponiveis.map(horario => (
+                    <option key={horario} value={horario}>{horario}</option>
+                  ))}
                 </select>
               </div>
               
@@ -161,16 +256,35 @@ function Dashboard({ usuario: usuarioProp, onLogout }) {
                   onChange={handleInputChange}
                   className="input"
                 >
-                  <option value="Corte de cabelo">Corte de cabelo</option>
-                  <option value="Corte + Barba">Corte + Barba</option>
-                  <option value="Apenas Barba">Apenas Barba</option>
-                  <option value="Corte Infantil">Corte Infantil</option>
+                  <option value="Corte de cabelo">Corte de cabelo - R$ 25,00</option>
+                  <option value="Barba">Barba - R$ 15,00</option>
+                  <option value="Corte + Barba">Corte + Barba - R$ 35,00</option>
+                  <option value="Sobrancelha">Sobrancelha - R$ 10,00</option>
+                  <option value="Bigode">Bigode - R$ 8,00</option>
+                  <option value="Lavagem">Lavagem - R$ 12,00</option>
                 </select>
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="observacoes" className="input-label">Observações (opcional)</label>
+                <textarea
+                  id="observacoes"
+                  name="observacoes"
+                  value={novoAgendamento.observacoes}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder="Alguma observação especial?"
+                  rows="3"
+                />
               </div>
             </div>
             
-            <button onClick={criarAgendamento} className="btn btn-primary">
-              Agendar
+            <button 
+              onClick={criarAgendamento}
+              className="btn btn-primary"
+              disabled={carregandoAgendamento}
+            >
+              {carregandoAgendamento ? 'Agendando...' : 'Agendar'}
             </button>
             
             {mensagem && (
@@ -188,24 +302,33 @@ function Dashboard({ usuario: usuarioProp, onLogout }) {
             ) : (
               <div className="agendamentos-grid">
                 {agendamentos.map(agendamento => (
-                  <div key={agendamento.id} className="agendamento-card">
-                    <div className="agendamento-header">
-                      <h3 className="agendamento-servico">{agendamento.servico}</h3>
-                      <span className={`status status-${agendamento.status}`}>
-                        {agendamento.status === 'confirmado' ? 'Confirmado' : 'Agendado'}
-                      </span>
-                    </div>
-                    <div className="agendamento-details">
+                  <div className="agendamento-item" key={agendamento.id}>
+                    <div className="agendamento-info">
                       <p><strong>Data:</strong> {new Date(agendamento.data).toLocaleDateString('pt-BR')}</p>
                       <p><strong>Horário:</strong> {agendamento.horario}</p>
-                      <p><strong>Barbeiro:</strong> {agendamento.barbeiro}</p>
+                      <p><strong>Serviço:</strong> {agendamento.servico}</p>
+                      {agendamento.barbeiroNome && (
+                        <p><strong>Barbeiro:</strong> {agendamento.barbeiroNome}</p>
+                      )}
+                      {agendamento.observacoes && (
+                        <p><strong>Observações:</strong> {agendamento.observacoes}</p>
+                      )}
+                      <p><strong>Status:</strong> 
+                        <span className={`status status-${agendamento.status}`}>
+                          {agendamento.status === 'agendado' ? 'Agendado' : 
+                           agendamento.status === 'confirmado' ? 'Confirmado' : 
+                           agendamento.status === 'concluido' ? 'Concluído' : 'Cancelado'}
+                        </span>
+                      </p>
                     </div>
-                    <button 
-                      onClick={() => cancelarAgendamento(agendamento.id)}
-                      className="btn btn-secondary btn-small"
-                    >
-                      Cancelar
-                    </button>
+                    {agendamento.status === 'agendado' && (
+                      <button 
+                        onClick={() => cancelarAgendamento(agendamento.id)}
+                        className="btn btn-secondary btn-small"
+                      >
+                        Cancelar
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>

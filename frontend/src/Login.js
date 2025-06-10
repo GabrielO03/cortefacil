@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 
-function Login({ onLogin }) {
+function Login({ onLogin, onIrCadastro }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
@@ -109,8 +109,15 @@ function Login({ onLogin }) {
         </div>
         
         <div className="login-footer">
-          <p>Não tem uma conta? <a href="#" className="link">Cadastre-se</a></p>
-          <p><a href="#" className="link">Esqueceu sua senha?</a></p>
+          <div className="login-links">
+            <button 
+              type="button" 
+              className="link-secundario"
+              onClick={onIrCadastro}
+            >
+              Criar conta
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
+const { initDatabase } = require('./config/database');
 require('dotenv').config();
 
 const app = express();
@@ -12,10 +12,11 @@ app.use(cors());
 const usuarioRoutes = require('./routes/usuarioRoutes');
 app.use('/api/usuarios', usuarioRoutes);
 
-// Conecta no banco
-mongoose.connect(process.env.DB_URI)
-  .then(() => console.log('MongoDB conectado com sucesso!'))
-  .catch(err => console.log('Erro ao conectar com MongoDB:', err));
+// Inicializa o banco de dados (MongoDB com fallback para SQLite)
+initDatabase().catch(err => {
+  console.error('Erro fatal ao inicializar banco de dados:', err);
+  process.exit(1);
+});
 
 // Rota principal de teste
 app.get('/', (req, res) => {
