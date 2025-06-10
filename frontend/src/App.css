@@ -1,38 +1,103 @@
+/* Estilos principais da aplicação CorteFácil */
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
+  background: linear-gradient(135deg, var(--cor-cinza-claro) 0%, #e5e5e5 100%);
+}
+
+/* Header da aplicação */
+.App-header {
+  background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-cinza-escuro) 100%);
+  color: var(--cor-terciaria);
+  padding: 20px 0;
+  box-shadow: var(--sombra);
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+/* Navegação */
+.App-nav {
+  background: var(--cor-terciaria);
+  border-bottom: 3px solid var(--cor-secundaria);
+  padding: 16px 0;
+  box-shadow: var(--sombra);
+}
+
+.App-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 32px;
 }
 
-.App-link {
-  color: #61dafb;
+.App-nav li {
+  margin: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.App-nav a {
+  color: var(--cor-primaria);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  transition: var(--transicao);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+}
+
+.App-nav a:hover {
+  background: var(--cor-secundaria);
+  color: var(--cor-terciaria);
+  transform: translateY(-2px);
+}
+
+.App-nav a.active {
+  background: var(--cor-primaria);
+  color: var(--cor-terciaria);
+}
+
+/* Conteúdo principal */
+.App-main {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Footer */
+.App-footer {
+  background: var(--cor-primaria);
+  color: var(--cor-terciaria);
+  text-align: center;
+  padding: 24px 20px;
+  margin-top: auto;
+}
+
+.App-footer p {
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .App-nav ul {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .App-header h1 {
+    font-size: 24px;
+  }
+  
+  .App-main {
+    padding: 20px 16px;
   }
 }

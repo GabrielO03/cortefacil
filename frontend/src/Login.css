@@ -1,0 +1,176 @@
+/* Estilos específicos para o componente Login */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--cor-cinza-claro) 0%, #e5e5e5 100%);
+}
+
+.login-card {
+  background: var(--cor-terciaria);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--cor-secundaria) 0%, var(--cor-primaria) 100%);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.login-subtitle {
+  color: var(--cor-cinza-escuro);
+  font-size: 16px;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.login-form {
+  margin-bottom: 24px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--cor-primaria);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.login-button {
+  width: 100%;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-button.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.login-button.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.login-footer {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.login-footer p {
+  margin: 8px 0;
+  color: var(--cor-cinza-escuro);
+  font-size: 14px;
+}
+
+.link {
+  color: var(--cor-secundaria);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transicao);
+}
+
+.link:hover {
+  color: #b91c1c;
+  text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 16px;
+  }
+  
+  .login-card {
+    padding: 24px;
+  }
+  
+  .login-title {
+    font-size: 28px;
+  }
+  
+  .login-subtitle {
+    font-size: 14px;
+  }
+}
+
+/* Animações de entrada */
+.login-card {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estados de foco melhorados */
+.input:focus {
+  transform: translateY(-1px);
+}
+
+/* Efeito hover nos inputs */
+.input:hover:not(:focus) {
+  border-color: #d1d5db;
+}
+
+/* Estilo para inputs desabilitados */
+.input:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
